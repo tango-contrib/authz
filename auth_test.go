@@ -73,6 +73,24 @@ func TestBasicModel(t *testing.T) {
 	testEnforce(t, e, "bob", "/resource2", "POST", true)
 }
 
+func TestBasicModelWithRoot(t *testing.T) {
+	e := &casbin.Enforcer{}
+	e.Init("examples/basic_model_with_root.conf", "examples/basic_policy.csv")
+
+	testEnforce(t, e, "alice", "/resource1", "GET", true)
+	testEnforce(t, e, "alice", "/resource1", "POST", false)
+	testEnforce(t, e, "alice", "/resource2", "GET", false)
+	testEnforce(t, e, "alice", "/resource2", "POST", false)
+	testEnforce(t, e, "bob", "/resource1", "GET", false)
+	testEnforce(t, e, "bob", "/resource1", "POST", false)
+	testEnforce(t, e, "bob", "/resource2", "GET", false)
+	testEnforce(t, e, "bob", "/resource2", "POST", true)
+	testEnforce(t, e, "root", "/resource1", "GET", true)
+	testEnforce(t, e, "root", "/resource1", "POST", true)
+	testEnforce(t, e, "root", "/resource2", "GET", true)
+	testEnforce(t, e, "root", "/resource2", "POST", true)
+}
+
 func TestRBACModel(t *testing.T) {
 	e := &casbin.Enforcer{}
 	e.Init("examples/rbac_model.conf", "examples/rbac_policy.csv")
