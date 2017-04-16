@@ -47,7 +47,7 @@ func main() {
 
 	// init auth middleware
 	e := casbin.Enforcer{}
-	e.Init("model.conf", "policy.csv")
+	e.Init(rbac_model.conf, rbac_policy.csv)
 
 	t.Use(auth.Auth(e, sessions))
 

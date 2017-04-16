@@ -59,9 +59,9 @@ func testEnforce(t *testing.T, e *casbin.Enforcer, sub string, obj string, act s
 	}
 }
 
-func TestAuthorization(t *testing.T) {
+func TestRBACModel(t *testing.T) {
 	e := casbin.Enforcer{}
-	e.Init("model.conf", "policy.csv")
+	e.Init("rbac_model.conf", "rbac_policy.csv")
 
 	testEnforce(t, &e, "alice", "/resource1", "GET", true)
 	testEnforce(t, &e, "alice", "/resource1", "POST", false)
