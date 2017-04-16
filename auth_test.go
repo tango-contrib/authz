@@ -59,22 +59,36 @@ func testEnforce(t *testing.T, e *casbin.Enforcer, sub string, obj string, act s
 	}
 }
 
-func TestRBACModel(t *testing.T) {
-	e := casbin.Enforcer{}
-	e.Init("rbac_model.conf", "rbac_policy.csv")
+func TestBasicModel(t *testing.T) {
+	e := &casbin.Enforcer{}
+	e.Init("examples/basic_model.conf", "examples/basic_policy.csv")
 
-	testEnforce(t, &e, "alice", "/resource1", "GET", true)
-	testEnforce(t, &e, "alice", "/resource1", "POST", false)
-	testEnforce(t, &e, "alice", "/resource2", "GET", false)
-	testEnforce(t, &e, "alice", "/resource2", "POST", false)
-	testEnforce(t, &e, "alice", "/resource3", "GET", true)
-	testEnforce(t, &e, "alice", "/resource3", "POST", false)
-	testEnforce(t, &e, "bob", "/resource1", "GET", false)
-	testEnforce(t, &e, "bob", "/resource1", "POST", false)
-	testEnforce(t, &e, "bob", "/resource2", "GET", false)
-	testEnforce(t, &e, "bob", "/resource2", "POST", true)
-	testEnforce(t, &e, "bob", "/resource3", "GET", true)
-	testEnforce(t, &e, "bob", "/resource3", "POST", false)
+	testEnforce(t, e, "alice", "/resource1", "GET", true)
+	testEnforce(t, e, "alice", "/resource1", "POST", false)
+	testEnforce(t, e, "alice", "/resource2", "GET", false)
+	testEnforce(t, e, "alice", "/resource2", "POST", false)
+	testEnforce(t, e, "bob", "/resource1", "GET", false)
+	testEnforce(t, e, "bob", "/resource1", "POST", false)
+	testEnforce(t, e, "bob", "/resource2", "GET", false)
+	testEnforce(t, e, "bob", "/resource2", "POST", true)
+}
+
+func TestRBACModel(t *testing.T) {
+	e := &casbin.Enforcer{}
+	e.Init("examples/rbac_model.conf", "examples/rbac_policy.csv")
+
+	testEnforce(t, e, "alice", "/resource1", "GET", true)
+	testEnforce(t, e, "alice", "/resource1", "POST", false)
+	testEnforce(t, e, "alice", "/resource2", "GET", false)
+	testEnforce(t, e, "alice", "/resource2", "POST", false)
+	testEnforce(t, e, "alice", "/resource3", "GET", true)
+	testEnforce(t, e, "alice", "/resource3", "POST", false)
+	testEnforce(t, e, "bob", "/resource1", "GET", false)
+	testEnforce(t, e, "bob", "/resource1", "POST", false)
+	testEnforce(t, e, "bob", "/resource2", "GET", false)
+	testEnforce(t, e, "bob", "/resource2", "POST", true)
+	testEnforce(t, e, "bob", "/resource3", "GET", true)
+	testEnforce(t, e, "bob", "/resource3", "POST", false)
 }
 
 /* Test Helpers */

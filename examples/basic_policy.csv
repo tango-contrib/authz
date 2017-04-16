@@ -1,0 +1,2 @@
+p, alice, /resource1, GET
+p, bob, /resource2, POST
