@@ -1,0 +1,5 @@
+p, alice, /resource1, GET
+p, bob, /resource2, POST
+p, res3_admin, /resource3, GET
+g, alice, res3_admin
+g, bob, res3_admin
