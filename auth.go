@@ -1,10 +1,10 @@
 package rbac
 
 import (
-	"github.com/lunny/tango"
-	"github.com/tango-contrib/session"
 	"fmt"
 	"github.com/hsluoyz/casbin"
+	"github.com/lunny/tango"
+	"github.com/tango-contrib/session"
 )
 
 var (

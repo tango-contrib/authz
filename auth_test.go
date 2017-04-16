@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/lunny/tango"
 	"github.com/hsluoyz/casbin"
+	"github.com/lunny/tango"
 	"github.com/tango-contrib/session"
 )
 
@@ -44,7 +44,7 @@ func testEnforce(t *testing.T, e *casbin.Enforcer, sub string, obj string, act s
 	tg.Use(Auth(e, sessions))
 	tg.Any("*", new(RBACPermAction))
 
-	req, err := http.NewRequest(act, "http://localhost:8000" + obj, nil)
+	req, err := http.NewRequest(act, "http://localhost:8000"+obj, nil)
 	if err != nil {
 		t.Error(err)
 	}
