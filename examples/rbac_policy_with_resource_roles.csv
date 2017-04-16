@@ -1,0 +1,6 @@
+p, alice, /resource1, GET
+p, bob, /resource2, POST
+p, data_group_admin, data_group, POST
+g, alice, data_group_admin
+g2, /resource1, data_group
+g2, /resource2, data_group

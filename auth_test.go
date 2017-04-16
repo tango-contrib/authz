@@ -109,6 +109,21 @@ func TestRBACModel(t *testing.T) {
 	testEnforce(t, e, "bob", "/resource3", "POST", false)
 }
 
+func TestRBACModelWithResourceRoles(t *testing.T) {
+	e := &casbin.Enforcer{}
+	e.Init("examples/rbac_model_with_resource_roles.conf", "examples/rbac_policy_with_resource_roles.csv")
+
+	testEnforce(t, e, "alice", "/resource1", "GET", true)
+	testEnforce(t, e, "alice", "/resource1", "POST", true)
+	testEnforce(t, e, "alice", "/resource2", "GET", false)
+	testEnforce(t, e, "alice", "/resource2", "POST", true)
+	testEnforce(t, e, "bob", "/resource1", "GET", false)
+	testEnforce(t, e, "bob", "/resource1", "POST", false)
+	testEnforce(t, e, "bob", "/resource2", "GET", false)
+	testEnforce(t, e, "bob", "/resource2", "POST", true)
+}
+
+
 /* Test Helpers */
 func expect(t *testing.T, a interface{}, b interface{}) {
 	if a != b {
