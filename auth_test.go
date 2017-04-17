@@ -12,21 +12,6 @@ import (
 	"github.com/tango-contrib/session"
 )
 
-type RBACPermAction struct {
-}
-
-func (r *RBACPermAction) Get() string {
-	return DefaultHasPermString
-}
-
-func (r *RBACPermAction) POST() string {
-	return DefaultHasPermString
-}
-
-func (r *RBACPermAction) PUT() string {
-	return DefaultHasPermString
-}
-
 func testEnforce(t *testing.T, e *casbin.Enforcer, sub string, obj string, act string, res bool) {
 	buff := bytes.NewBufferString("")
 	recorder := httptest.NewRecorder()
@@ -42,7 +27,9 @@ func testEnforce(t *testing.T, e *casbin.Enforcer, sub string, obj string, act s
 	}))
 
 	tg.Use(Auth(e, sessions))
-	tg.Any("*", new(RBACPermAction))
+	tg.Any("*", func() string {
+		return DefaultHasPermString
+	})
 
 	req, err := http.NewRequest(act, "http://localhost:8000"+obj, nil)
 	if err != nil {

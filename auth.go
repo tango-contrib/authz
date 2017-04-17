@@ -22,8 +22,7 @@ func Auth(enforcer *casbin.Enforcer, sessions *session.Sessions) tango.HandlerFu
 		fmt.Println("Enforcing request:", sub, ",", obj, ",", act)
 
 		if enforcer.Enforce(sub, obj, act) {
-			// ctx.Next()
-			ctx.Write([]byte(DefaultHasPermString))
+			ctx.Next()
 		} else {
 			ctx.Write([]byte(DefaultNoPermString))
 		}
