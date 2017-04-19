@@ -7,12 +7,12 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/hsluoyz/casbin"
+	"github.com/hsluoyz/casbin/api"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/session"
 )
 
-func testEnforce(t *testing.T, e *casbin.Enforcer, sub string, obj string, act string, res bool) {
+func testEnforce(t *testing.T, e *api.Enforcer, sub string, obj string, act string, res bool) {
 	buff := bytes.NewBufferString("")
 	recorder := httptest.NewRecorder()
 	recorder.Body = buff
@@ -47,8 +47,8 @@ func testEnforce(t *testing.T, e *casbin.Enforcer, sub string, obj string, act s
 }
 
 func TestBasicModel(t *testing.T) {
-	e := &casbin.Enforcer{}
-	e.Init("examples/basic_model.conf", "examples/basic_policy.csv")
+	e := &api.Enforcer{}
+	e.InitWithFile("examples/basic_model.conf", "examples/basic_policy.csv")
 
 	testEnforce(t, e, "alice", "/resource1", "GET", true)
 	testEnforce(t, e, "alice", "/resource1", "POST", false)
@@ -61,8 +61,8 @@ func TestBasicModel(t *testing.T) {
 }
 
 func TestBasicModelWithRoot(t *testing.T) {
-	e := &casbin.Enforcer{}
-	e.Init("examples/basic_model_with_root.conf", "examples/basic_policy.csv")
+	e := &api.Enforcer{}
+	e.InitWithFile("examples/basic_model_with_root.conf", "examples/basic_policy.csv")
 
 	testEnforce(t, e, "alice", "/resource1", "GET", true)
 	testEnforce(t, e, "alice", "/resource1", "POST", false)
@@ -79,8 +79,8 @@ func TestBasicModelWithRoot(t *testing.T) {
 }
 
 func TestRBACModel(t *testing.T) {
-	e := &casbin.Enforcer{}
-	e.Init("examples/rbac_model.conf", "examples/rbac_policy.csv")
+	e := &api.Enforcer{}
+	e.InitWithFile("examples/rbac_model.conf", "examples/rbac_policy.csv")
 
 	testEnforce(t, e, "alice", "/resource1", "GET", true)
 	testEnforce(t, e, "alice", "/resource1", "POST", false)
@@ -97,8 +97,8 @@ func TestRBACModel(t *testing.T) {
 }
 
 func TestRBACModelWithResourceRoles(t *testing.T) {
-	e := &casbin.Enforcer{}
-	e.Init("examples/rbac_model_with_resource_roles.conf", "examples/rbac_policy_with_resource_roles.csv")
+	e := &api.Enforcer{}
+	e.InitWithFile("examples/rbac_model_with_resource_roles.conf", "examples/rbac_policy_with_resource_roles.csv")
 
 	testEnforce(t, e, "alice", "/resource1", "GET", true)
 	testEnforce(t, e, "alice", "/resource1", "POST", true)
@@ -111,8 +111,8 @@ func TestRBACModelWithResourceRoles(t *testing.T) {
 }
 
 func TestKeymatchModel(t *testing.T) {
-	e := &casbin.Enforcer{}
-	e.Init("examples/keymatch_model.conf", "examples/keymatch_policy.csv")
+	e := &api.Enforcer{}
+	e.InitWithFile("examples/keymatch_model.conf", "examples/keymatch_policy.csv")
 
 	testEnforce(t, e, "alice", "/alice_data/resource1", "GET", true)
 	testEnforce(t, e, "alice", "/alice_data/resource1", "POST", true)

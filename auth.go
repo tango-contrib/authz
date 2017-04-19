@@ -2,7 +2,7 @@ package rbac
 
 import (
 	"fmt"
-	"github.com/hsluoyz/casbin"
+	"github.com/hsluoyz/casbin/api"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/session"
 )
@@ -14,7 +14,7 @@ var (
 )
 
 // Auth return a casbin handler.
-func Auth(enforcer *casbin.Enforcer, sessions *session.Sessions) tango.HandlerFunc {
+func Auth(enforcer *api.Enforcer, sessions *session.Sessions) tango.HandlerFunc {
 	return func(ctx *tango.Context) {
 		sub := sessions.Session(ctx.Req(), ctx.ResponseWriter).Get(DefaultUserSessionKey).(string)
 		obj := ctx.Req().URL.Path
