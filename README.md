@@ -1,11 +1,11 @@
-auth
+authz
 ======
 
-Auth is an authorization middleware for [Tango](https://github.com/lunny/tango), it's based on [https://github.com/hsluoyz/casbin](https://github.com/hsluoyz/casbin).
+authz is an authorization middleware for [Tango](https://github.com/lunny/tango), it's based on [https://github.com/hsluoyz/casbin](https://github.com/hsluoyz/casbin).
 
 ## Installation
 
-    go get github.com/hsluoyz/auth
+    go get github.com/tango-contrib/authz
 
 ## Simple Example
 
@@ -13,48 +13,36 @@ Auth is an authorization middleware for [Tango](https://github.com/lunny/tango),
 package main
 
 import (
+	"github.com/hsluoyz/casbin/api"
 	"github.com/lunny/tango"
-	"github.com/hsluoyz/auth"
-	"github.com/hsluoyz/casbin"
+	"github.com/tango-contrib/authz"
 	"github.com/tango-contrib/session"
 )
 
-var (
-	DefaultHasPermString  = "You have the correct permission"
-)
-
-type RBACPermAction struct {
-}
-
-func (r *RBACPermAction) Get() string {
-	return DefaultHasPermString
-}
-
-func (r *RBACPermAction) POST() string {
-	return DefaultHasPermString
-}
-
-func (r *RBACPermAction) PUT() string {
-	return DefaultHasPermString
-}
-
 func main() {
-	t := tango.Classic()
-
-	// init session middleware to store roles
+	tg := tango.Classic()
 	sessions := session.New()
-	t.Use(sessions)
 
-	// init auth middleware
-	e := casbin.Enforcer{}
-	e.Init(rbac_model.conf, rbac_policy.csv)
+	tg.Use(tango.HandlerFunc(func(ctx *tango.Context) {
+		sess := sessions.Session(ctx.Req(), ctx.ResponseWriter)
+		sess.Set("casbin_user", "user's name")
+		ctx.Next()
+	}))
 
-	t.Use(auth.Auth(e, sessions))
-
+	// init authz middleware
+	e := api.Enforcer{}
+	// load the casbin model and policy from files, database is also supported.
+	e.InitWithFile("examples/basic_model.conf", "examples/basic_policy.csv")
+	tg.Use(authz.Auth(&e, sessions))
+	
 	// define the routers
-	t.Post("/resource1", new(RBACPermAction))
-	t.Any("/resource2", new(RBACPermAction))
-	t.Run()
+	// the access that is denied by authz will return "You have no permission to visit this page"
+	tg.Any("*", func() string {
+	    // the access is permitted when got here
+		return "You have the correct permission"
+	})
+
+	tg.Run()
 }
 ```
 
