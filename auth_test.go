@@ -10,6 +10,8 @@ import (
 	"github.com/hsluoyz/casbin/api"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/session"
+	"github.com/hsluoyz/casbin/persist"
+	"github.com/hsluoyz/casbin/util"
 )
 
 func testEnforce(t *testing.T, e *api.Enforcer, sub string, obj string, act string, res bool) {
@@ -130,6 +132,41 @@ func TestKeymatchModel(t *testing.T) {
 	testEnforce(t, e, "bob", "/bob_data/resource1", "POST", true)
 	testEnforce(t, e, "bob", "/bob_data/resource2", "GET", false)
 	testEnforce(t, e, "bob", "/bob_data/resource2", "POST", true)
+}
+
+func testGetPolicy(t *testing.T, e *api.Enforcer, res [][]string) {
+	myRes := e.GetPolicy()
+
+	if !util.Array2DEquals(res, myRes) {
+		t.Error("Policy: ", myRes, ", supposed to be ", res)
+	}
+}
+
+func TestDBSavePolicy(t *testing.T) {
+	e := &api.Enforcer{}
+	e.InitWithFile("examples/rbac_model.conf", "examples/rbac_policy.csv")
+
+	a := persist.NewDBAdapter("mysql", "root:@tcp(127.0.0.1:3306)/")
+	a.SavePolicy(e.GetModel())
+}
+
+func TestDBSaveAndLoadPolicy(t *testing.T) {
+	e := &api.Enforcer{}
+	e.InitWithFile("examples/rbac_model.conf", "examples/rbac_policy.csv")
+
+	a := persist.NewDBAdapter("mysql", "root:@tcp(127.0.0.1:3306)/")
+	a.SavePolicy(e.GetModel())
+
+	e.ClearPolicy()
+	testGetPolicy(t, e, [][]string{})
+
+	a.LoadPolicy(e.GetModel())
+	testGetPolicy(t, e, [][]string{{"alice", "/resource1", "GET"}, {"bob", "/resource2", "POST"}, {"res3_admin", "/resource3", "GET"}})
+
+	e = &api.Enforcer{}
+	e.InitWithDB("examples/rbac_model.conf", "mysql", "root:@tcp(127.0.0.1:3306)/")
+	testGetPolicy(t, e, [][]string{{"alice", "/resource1", "GET"}, {"bob", "/resource2", "POST"}, {"res3_admin", "/resource3", "GET"}})
+
 }
 
 /* Test Helpers */
