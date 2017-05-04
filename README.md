@@ -1,4 +1,4 @@
-authz
+authz [![GoDoc](https://godoc.org/github.com/tango-contrib/authz?status.svg)](https://godoc.org/github.com/tango-contrib/authz)
 ======
 
 authz is an authorization middleware for [Tango](https://github.com/lunny/tango), it's based on [https://github.com/hsluoyz/casbin](https://github.com/hsluoyz/casbin).
@@ -13,7 +13,7 @@ authz is an authorization middleware for [Tango](https://github.com/lunny/tango)
 package main
 
 import (
-	"github.com/hsluoyz/casbin/api"
+	"github.com/hsluoyz/casbin"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/authz"
 	"github.com/tango-contrib/session"
@@ -29,10 +29,8 @@ func main() {
 		ctx.Next()
 	}))
 
-	// init authz middleware
-	e := api.Enforcer{}
 	// load the casbin model and policy from files, database is also supported.
-	e.InitWithFile("examples/basic_model.conf", "examples/basic_policy.csv")
+	e := casbin.NewEnforcer("examples/basic_model.conf", "examples/basic_policy.csv")
 	tg.Use(authz.Auth(&e, sessions))
 	
 	// define the routers

@@ -7,14 +7,14 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/hsluoyz/casbin/api"
+	"github.com/hsluoyz/casbin"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/session"
 	"github.com/hsluoyz/casbin/persist"
 	"github.com/hsluoyz/casbin/util"
 )
 
-func testEnforce(t *testing.T, e *api.Enforcer, sub string, obj string, act string, res bool) {
+func testEnforce(t *testing.T, e *casbin.Enforcer, sub string, obj string, act string, res bool) {
 	buff := bytes.NewBufferString("")
 	recorder := httptest.NewRecorder()
 	recorder.Body = buff
@@ -49,8 +49,7 @@ func testEnforce(t *testing.T, e *api.Enforcer, sub string, obj string, act stri
 }
 
 func TestBasicModel(t *testing.T) {
-	e := &api.Enforcer{}
-	e.InitWithFile("examples/basic_model.conf", "examples/basic_policy.csv")
+	e := casbin.NewEnforcer("examples/basic_model.conf", "examples/basic_policy.csv")
 
 	testEnforce(t, e, "alice", "/resource1", "GET", true)
 	testEnforce(t, e, "alice", "/resource1", "POST", false)
@@ -63,8 +62,7 @@ func TestBasicModel(t *testing.T) {
 }
 
 func TestBasicModelWithRoot(t *testing.T) {
-	e := &api.Enforcer{}
-	e.InitWithFile("examples/basic_model_with_root.conf", "examples/basic_policy.csv")
+	e := casbin.NewEnforcer("examples/basic_model_with_root.conf", "examples/basic_policy.csv")
 
 	testEnforce(t, e, "alice", "/resource1", "GET", true)
 	testEnforce(t, e, "alice", "/resource1", "POST", false)
@@ -81,8 +79,7 @@ func TestBasicModelWithRoot(t *testing.T) {
 }
 
 func TestRBACModel(t *testing.T) {
-	e := &api.Enforcer{}
-	e.InitWithFile("examples/rbac_model.conf", "examples/rbac_policy.csv")
+	e := casbin.NewEnforcer("examples/rbac_model.conf", "examples/rbac_policy.csv")
 
 	testEnforce(t, e, "alice", "/resource1", "GET", true)
 	testEnforce(t, e, "alice", "/resource1", "POST", false)
@@ -99,8 +96,7 @@ func TestRBACModel(t *testing.T) {
 }
 
 func TestRBACModelWithResourceRoles(t *testing.T) {
-	e := &api.Enforcer{}
-	e.InitWithFile("examples/rbac_model_with_resource_roles.conf", "examples/rbac_policy_with_resource_roles.csv")
+	e := casbin.NewEnforcer("examples/rbac_model_with_resource_roles.conf", "examples/rbac_policy_with_resource_roles.csv")
 
 	testEnforce(t, e, "alice", "/resource1", "GET", true)
 	testEnforce(t, e, "alice", "/resource1", "POST", true)
@@ -113,8 +109,7 @@ func TestRBACModelWithResourceRoles(t *testing.T) {
 }
 
 func TestKeymatchModel(t *testing.T) {
-	e := &api.Enforcer{}
-	e.InitWithFile("examples/keymatch_model.conf", "examples/keymatch_policy.csv")
+	e := casbin.NewEnforcer("examples/keymatch_model.conf", "examples/keymatch_policy.csv")
 
 	testEnforce(t, e, "alice", "/alice_data/resource1", "GET", true)
 	testEnforce(t, e, "alice", "/alice_data/resource1", "POST", true)
@@ -134,7 +129,7 @@ func TestKeymatchModel(t *testing.T) {
 	testEnforce(t, e, "bob", "/bob_data/resource2", "POST", true)
 }
 
-func testGetPolicy(t *testing.T, e *api.Enforcer, res [][]string) {
+func testGetPolicy(t *testing.T, e *casbin.Enforcer, res [][]string) {
 	myRes := e.GetPolicy()
 
 	if !util.Array2DEquals(res, myRes) {
@@ -143,16 +138,14 @@ func testGetPolicy(t *testing.T, e *api.Enforcer, res [][]string) {
 }
 
 func TestDBSavePolicy(t *testing.T) {
-	e := &api.Enforcer{}
-	e.InitWithFile("examples/rbac_model.conf", "examples/rbac_policy.csv")
+	e := casbin.NewEnforcer("examples/rbac_model.conf", "examples/rbac_policy.csv")
 
 	a := persist.NewDBAdapter("mysql", "root:@tcp(127.0.0.1:3306)/")
 	a.SavePolicy(e.GetModel())
 }
 
 func TestDBSaveAndLoadPolicy(t *testing.T) {
-	e := &api.Enforcer{}
-	e.InitWithFile("examples/rbac_model.conf", "examples/rbac_policy.csv")
+	e := casbin.NewEnforcer("examples/rbac_model.conf", "examples/rbac_policy.csv")
 
 	a := persist.NewDBAdapter("mysql", "root:@tcp(127.0.0.1:3306)/")
 	a.SavePolicy(e.GetModel())
@@ -163,8 +156,7 @@ func TestDBSaveAndLoadPolicy(t *testing.T) {
 	a.LoadPolicy(e.GetModel())
 	testGetPolicy(t, e, [][]string{{"alice", "/resource1", "GET"}, {"bob", "/resource2", "POST"}, {"res3_admin", "/resource3", "GET"}})
 
-	e = &api.Enforcer{}
-	e.InitWithDB("examples/rbac_model.conf", "mysql", "root:@tcp(127.0.0.1:3306)/")
+	e = casbin.NewEnforcer("examples/rbac_model.conf", "mysql", "root:@tcp(127.0.0.1:3306)/")
 	testGetPolicy(t, e, [][]string{{"alice", "/resource1", "GET"}, {"bob", "/resource2", "POST"}, {"res3_admin", "/resource3", "GET"}})
 
 }
