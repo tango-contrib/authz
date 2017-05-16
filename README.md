@@ -1,4 +1,4 @@
-authz [![GoDoc](https://godoc.org/github.com/tango-contrib/authz?status.svg)](https://godoc.org/github.com/tango-contrib/authz)
+authz [![Build Status](https://travis-ci.org/tango-contrib/authz.svg?branch=master)](https://travis-ci.org/tango-contrib/authz) [![GoDoc](https://godoc.org/github.com/tango-contrib/authz?status.svg)](https://godoc.org/github.com/tango-contrib/authz)
 ======
 
 authz is an authorization middleware for [Tango](https://github.com/lunny/tango), it's based on [https://github.com/hsluoyz/casbin](https://github.com/hsluoyz/casbin).
