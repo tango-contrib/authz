@@ -2,7 +2,7 @@ package authz
 
 import (
 	"fmt"
-	"github.com/hsluoyz/casbin"
+	"github.com/casbin/casbin"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/session"
 )

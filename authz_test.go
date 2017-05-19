@@ -7,11 +7,11 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/hsluoyz/casbin"
+	"github.com/casbin/casbin"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/session"
-	"github.com/hsluoyz/casbin/persist"
-	"github.com/hsluoyz/casbin/util"
+	"github.com/casbin/casbin/persist"
+	"github.com/casbin/casbin/util"
 )
 
 func testEnforce(t *testing.T, e *casbin.Enforcer, sub string, obj string, act string, res bool) {

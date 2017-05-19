@@ -1,7 +1,7 @@
 authz [![Build Status](https://travis-ci.org/tango-contrib/authz.svg?branch=master)](https://travis-ci.org/tango-contrib/authz) [![Coverage Status](https://coveralls.io/repos/github/tango-contrib/authz/badge.svg?branch=master)](https://coveralls.io/github/tango-contrib/authz?branch=master) [![GoDoc](https://godoc.org/github.com/tango-contrib/authz?status.svg)](https://godoc.org/github.com/tango-contrib/authz)
 ======
 
-authz is an authorization middleware for [Tango](https://github.com/lunny/tango), it's based on [https://github.com/hsluoyz/casbin](https://github.com/hsluoyz/casbin).
+authz is an authorization middleware for [Tango](https://github.com/lunny/tango), it's based on [https://github.com/casbin/casbin](https://github.com/casbin/casbin).
 
 ## Installation
 
@@ -13,7 +13,7 @@ authz is an authorization middleware for [Tango](https://github.com/lunny/tango)
 package main
 
 import (
-	"github.com/hsluoyz/casbin"
+	"github.com/casbin/casbin"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/authz"
 	"github.com/tango-contrib/session"
@@ -46,7 +46,7 @@ func main() {
 
 ## Getting Help
 
-- [casbin](https://github.com/hsluoyz/casbin)
+- [casbin](https://github.com/casbin/casbin)
 
 ## License
 
